@@ -2,8 +2,9 @@ from typing import Dict
 import uuid
 
 class Game:
-    def __init__(self, id: str):
+    def __init__(self, id: str, name: str):
         self.id = id
+        self.name = name
         self.status = "voting"  # "voting" | "revealed"
         self.votes: Dict[str, str] = {}  # {player_id: vote_value}
     
