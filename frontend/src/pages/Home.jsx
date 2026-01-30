@@ -13,6 +13,7 @@ const Home = () => {
         console.log("loading start");
         try {
             const game = await api.createGame(gameName);
+            localStorage.setItem(`creator_${game.id}`, game.creator_id);
             console.log("Game Created");
             setLoading(false);
             console.log("loading stopped");

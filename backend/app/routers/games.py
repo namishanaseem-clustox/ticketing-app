@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.game import VoteRequest, GameResponse, CreateGameRequest
 from app.services.game_service import GameService
+from app.core.config import settings
 from typing import Any
+
 
 router = APIRouter(prefix="/games", tags=["games"])
 
@@ -9,7 +11,11 @@ router = APIRouter(prefix="/games", tags=["games"])
 def create_game(request: CreateGameRequest):
     """Create new planning poker game"""
     game = GameService.create_game(request.name)
-    return {"id": game.id, "name": game.name}
+    return {"id": game.id, "name": game.name, "creator_id": game.creator_id}
+
+@router.get("/options", response_model=dict)
+def get_vote_options():
+    return {"options": settings.vote_options}
 
 @router.get("/{game_id}", response_model=GameResponse)
 def get_game(game_id: str):
@@ -21,6 +27,7 @@ def get_game(game_id: str):
     return GameResponse(
         id=game.id,
         name=game.name,
+        creator_id= game.creator_id,
         status=game.status,
         vote_count=game.vote_count(),
 
@@ -43,3 +50,4 @@ def reveal(game_id: str):
     if not stats:
         raise HTTPException(status_code=404, detail="Game not found")
     return stats
+

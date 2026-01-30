@@ -1,3 +1,4 @@
+//API abstraction
 import axios from 'axios';
 
 const API_BASE = 'http://localhost:8000';
@@ -19,6 +20,11 @@ export const api = {
             player_name: playerName,
             value: value
         });
+        return response.data;
+    },
+
+    getVoteOptions: async () => {
+        const response = await axios.get(`${API_BASE}/games/options/`);
         return response.data;
     },
 

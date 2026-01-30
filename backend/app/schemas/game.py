@@ -11,6 +11,7 @@ class CreateGameRequest(BaseModel):
 class GameResponse(BaseModel):
     id: str
     name: str
+    creator_id: str
     status: str
     vote_count: int
     votes: Optional[Dict[str, str]] = None  # Hidden until revealed

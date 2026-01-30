@@ -9,7 +9,8 @@ class GameService:
     @staticmethod
     def create_game(name: str) -> str:
         game_id = str(uuid.uuid4())[:settings.game_id_length]
-        game = Game(game_id,name)
+        creator_id = str(uuid.uuid4())
+        game = Game(game_id,name, creator_id)
         games[game_id] = game
         return game
     

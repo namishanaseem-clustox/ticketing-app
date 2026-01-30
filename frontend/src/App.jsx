@@ -9,6 +9,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/game/:gameId" element={<Game />} />
+
+        {/*if an unknown path is entered by user*/}
         <Route path="*" element={<h1>404 - Page not found</h1>} />
       </Routes>
     </Router>

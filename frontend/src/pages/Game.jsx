@@ -7,10 +7,44 @@ const Game = () => {
     const [gameName, setGameName] = useState('Loading...');
     const [copied, setCopied] = useState(false);
     const [showshare, setShowShare] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [voteOptions, setVoteOptions] = useState([]);
+    const [isrevealed, setIsRevealed] = useState(false);
+
+    //if someone has joined game the app remembers even after reload
+    const [playerName, setPlayerName] = useState(
+        localStorage.getItem(`player_${gameId}`) || ''
+    );
+
+    //using temp name so only on join name is saved
+    const [tempName, setTempName] = useState('');
+    const [voteCount, setVoteCount] = useState(0);
+
+    const refreshGame = async () => {
+        const gamedata = await api.getGame(gameId);
+        setVoteCount(gamedata.vote_count);
+    };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refreshGame()
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [gameId]);
+
+    useEffect(() => {
+        api.getVoteOptions().then((data) => {
+            setVoteOptions(data.options);
+        });
+    }, []);
 
     useEffect(() => {
         api.getGame(gameId).then((gameData) => {
             setGameName(gameData.name);
+            const creatorId = localStorage.getItem(`creator_${gameId}`);
+            setIsAdmin(creatorId === gameData.creator_id);
+            
         }).catch(() => {
             setGameName('Game not found');
         });
@@ -38,7 +72,7 @@ const Game = () => {
 
             {/* Share Toggle Button - Centered */}
             <div>
-                {!showshare && 
+                {!showshare && isAdmin &&
                 <button onClick={() => setShowShare(true)}>
                     share invitation link
                 </button>}
@@ -62,8 +96,25 @@ const Game = () => {
                 </div>
             )}
 
+            {!playerName && (
+                <div>
+                    <input
+                        value={tempName}
+                        onChange={(e) => setTempName(e.target.value)}
+                        placeholder='Enter your name'
+                    />
+                    <button onClick={() => {
+                        localStorage.setItem(`player_${gameId}`,tempName),
+                        setPlayerName(tempName);
+                        setTempName('');
+                    }}>
+                        Join
+                    </button>
+                </div>
+            )}
+
             {/* Ticket Card */}
-            <div style={{
+            { playerName && <div style={{
                 maxWidth: '400px',
                 margin: '2rem auto',
                 padding: '2rem',
@@ -72,8 +123,29 @@ const Game = () => {
                 boxShadow: '0 20px 25px -5px rgba(0, 0,0, 0.1), 0 10px 10px -5px rgba(0, 0,0, 0.04)',
                 textAlign: 'center'
             }}>
-                <button>Start Voting</button>
+                <button disabled={!isAdmin} onClick={() => {setIsRevealed(true)}}>Reveal Votes</button>
             </div>
+            }
+
+            {playerName && <div>
+                <h3>Voting options:</h3>
+                {voteOptions.map((v) => (
+                    <button
+                        key={v}
+                        onClick={async () => {
+                            await api.submitVote(gameId, playerName, String(v));
+                        }}
+                        disabled={isrevealed}
+                    >
+                        {v}
+                    </button>
+                ))}
+                </div>}
+
+            { isAdmin ? (<h3>Admin Page</h3>):(<h3>Voter Page</h3>)}
+            <h4>{voteCount} votes submitted</h4>
+            {isrevealed && <h4>see revealed votes</h4>}
+
 
         </div>
     );
