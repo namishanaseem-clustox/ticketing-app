@@ -2,6 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import games
 
+from app.database.db import engine, Base
+from app.database.models.game import GameDB
+from app.database.models.vote import VoteDB
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="Agile Ticket Sizing Platform", 
     description="Planning Poker for Agile Teams",

@@ -1,5 +1,4 @@
 from typing import Dict
-import uuid
 
 class Game:
     def __init__(self, id: str, name: str, creator_id: str):
