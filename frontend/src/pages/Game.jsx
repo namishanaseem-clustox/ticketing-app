@@ -63,7 +63,7 @@ const Game = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             refreshGame()
-        }, 2000);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, [gameId]);
@@ -158,7 +158,7 @@ const Game = () => {
                 {/* Main Action Ticket Card */}
                 {playerName && (
                     <div className="card action-card">
-                        <p className="vote-status">{voteCount} votes submitted</p>
+                        {/* <p className="vote-status">{voteCount} votes submitted</p> */}
                         {!isrevealed ? (
                             <button className="primary-action-btn" onClick={handleReveal} disabled={!isAdmin}>
                                 Reveal Votes

@@ -95,6 +95,18 @@
 .action-card {
     background: #6b46c1; /* Modern Purple */
     color: white;
+    width: 680px;
+    height: 230px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
 }
 
 .primary-action-btn {
@@ -138,13 +150,13 @@
 
 .stat-item small {
     color: #718096;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
     margin-bottom: 4px;
 }
 
 .stat-item strong {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     color: #44337a;
 }
 
@@ -211,7 +223,7 @@
 }
 
 .share-link {
-    background-color: #d4d4d4;
+    background-color: #dadada;
     padding: 5px; /* Increased from 2px for better look */
     border-radius: 8px;
     color: #4a5568;
