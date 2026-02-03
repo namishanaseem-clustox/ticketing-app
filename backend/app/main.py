@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import games
@@ -14,10 +15,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
+origins = [
+    os.getenv("FRONTEND_URL", "http://localhost:5173"),
+]
+
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
