@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app.database.models.game import GameDB
 from app.database.models.vote import VoteDB
 from app.core.config import settings
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import uuid
 
 class GameService:
@@ -26,9 +26,25 @@ class GameService:
         return db_game
     
     @staticmethod
-    def get_game(db: Session, game_id: str) -> Optional[GameDB]:
+    def _calculate_stats(votes: List[VoteDB]) -> dict:
+        numeric_votes = [int(v.value) for v in votes if v.value.isdigit()]
+
+        if not numeric_votes:
+            return {"min": None, "max": None, "avg": None}
         
-        return db.query(GameDB).filter(GameDB.id==game_id).first()
+        return {
+            "min": min(numeric_votes),
+            "max": max(numeric_votes),
+            "avg": round(sum(numeric_votes)/len(numeric_votes),1)
+        }
+    
+    @staticmethod
+    def get_game(db: Session, game_id: str) -> Optional[GameDB]:
+        game = db.query(GameDB).filter(GameDB.id==game_id).first()
+        if not game:
+            None
+        
+        return game
     
     @staticmethod
     def submit_vote(db: Session, game_id: str, player_name: str, value: str) -> bool:
@@ -36,7 +52,7 @@ class GameService:
         if not game or game.status == "revealed":
             return False
         
-        #db query to check if vote exists already
+        '''db query to check if vote exists already'''
         existing_vote = db.query(VoteDB).filter(
             VoteDB.game_id == game_id,
             VoteDB.player_name == player_name
@@ -64,29 +80,10 @@ class GameService:
         
         game.status = "revealed"
         db.commit()
-        
-        votes_dict = {}
-        numeric_votes = []
+        db.refresh(game)
 
-        for vote in game.votes:
-            votes_dict[vote.player_name] = vote.value
+        stats = GameService._calculate_stats(game.votes)
 
-            if vote.value.isdigit():
-                numeric_votes.append(int(vote.value))
-
-        if numeric_votes:
-            stats = {
-                "votes": votes_dict,
-                "min": min(numeric_votes),
-                "max": max(numeric_votes),
-                "avg": round(sum(numeric_votes) / len(numeric_votes), 1)
-            }
-        else:
-            stats = {
-                "votes": votes_dict,
-                "min": None,
-                "max": None, 
-                "avg": None
-            }
+        stats["votes"] = {v.player_name: v.value for v in game.votes}
         
         return stats

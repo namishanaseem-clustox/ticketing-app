@@ -10,6 +10,7 @@ const Game = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [voteOptions, setVoteOptions] = useState([]);
     const [isrevealed, setIsRevealed] = useState(false);
+    const [stats, setStats] = useState({});
 
     //if someone has joined game the app remembers even after reload
     const [playerName, setPlayerName] = useState(
@@ -21,8 +22,36 @@ const Game = () => {
     const [voteCount, setVoteCount] = useState(0);
 
     const refreshGame = async () => {
-        const gamedata = await api.getGame(gameId);
-        setVoteCount(gamedata.vote_count);
+        try {
+            const gamedata = await api.getGame(gameId);
+            setVoteCount(gamedata.vote_count);
+            
+            if (gamedata.status === 'revealed') {
+                setIsRevealed(true);
+                // We no longer need to calculate min/max/avg here!
+                // The backend already did it.
+                setStats({
+                    ...gamedata.stats,
+                    votes: gamedata.votes
+                }); 
+            } else {
+                setIsRevealed(false);
+                setStats({});
+            }
+        } catch (error) {
+            console.error("Refresh failed:", error);
+        }
+    };
+
+    const handleReveal = async () => {
+        try {
+            const statsData = await api.revealGame(gameId);
+
+            setStats(statsData);
+            setIsRevealed(true);
+        } catch (error) {
+            console.error("Failed to reveal:", error);
+        }
     };
 
     useEffect(() => {
@@ -123,7 +152,7 @@ const Game = () => {
                 boxShadow: '0 20px 25px -5px rgba(0, 0,0, 0.1), 0 10px 10px -5px rgba(0, 0,0, 0.04)',
                 textAlign: 'center'
             }}>
-                <button disabled={!isAdmin} onClick={() => {setIsRevealed(true)}}>Reveal Votes</button>
+                <button disabled={!isAdmin} onClick={handleReveal}>Reveal Votes</button>
             </div>
             }
 
@@ -144,7 +173,18 @@ const Game = () => {
 
             { isAdmin ? (<h3>Admin Page</h3>):(<h3>Voter Page</h3>)}
             <h4>{voteCount} votes submitted</h4>
-            {isrevealed && <h4>see revealed votes</h4>}
+            {isrevealed && <div>
+                {/*<h3>Total votes: { stats.votes }</h3>*/}
+                <h3>Total Votes:</h3>
+                <ul>
+                    {stats.votes && Object.entries(stats.votes).map(([player, value]) => (
+                        <li key={player} style={{ marginBottom: '5px'}}>
+                            <strong>{player}:</strong> {value}
+                        </li>
+                    ))}
+                </ul>
+                <h3>Min: {stats.min ?? '-'} Max: {stats.max ?? '-'} Avg: {stats.avg ?? '-'}</h3>
+            </div>}
 
 
         </div>

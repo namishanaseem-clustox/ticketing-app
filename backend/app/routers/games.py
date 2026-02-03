@@ -12,6 +12,7 @@ router = APIRouter(prefix="/games", tags=["games"])
 
 @router.post("/", response_model=dict)
 def create_game(request: CreateGameRequest, db:Session = Depends(get_db)):
+    
     """Create new planning poker game"""
     game = GameService.create_game(db=db,name=request.name)
     return {"id": game.id, "name": game.name, "creator_id": game.creator_id}
@@ -22,16 +23,21 @@ def get_vote_options():
 
 @router.get("/{game_id}", response_model=GameResponse)
 def get_game(game_id: str, db: Session = Depends(get_db)):
+
     """Get game state (votes hidden until revealed)"""
     game = GameService.get_game(db, game_id)
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
     
-    curr_vote_count = db.query(VoteDB).filter(VoteDB.game_id == game_id).count()
+    curr_vote_count = len(game.votes)
 
+    stats_data = None
     votes_data = None
     if game.status == "revealed":
+        stats_data = GameService._calculate_stats(game.votes)
+        
         votes_data = {vote.player_name: vote.value for vote in game.votes}
+    
 
     return GameResponse(
         id=game.id,
@@ -39,7 +45,8 @@ def get_game(game_id: str, db: Session = Depends(get_db)):
         creator_id= game.creator_id,
         status=game.status,
         vote_count=curr_vote_count,
-        votes=votes_data
+        votes=votes_data,
+        stats=stats_data
     )
 
 @router.post("/{game_id}/vote")
