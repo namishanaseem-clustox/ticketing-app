@@ -1,0 +1,88 @@
+/* Resetting any body defaults that might be pushing things down */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.home-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* This centers the group vertically */
+    align-items: center;     /* This centers the group horizontally */
+    background-color: #eef2f5;
+    font-family: 'Inter', sans-serif;
+}
+
+.home-title {
+    color: #1a202c;
+    margin-bottom: 2rem; /* Space between title and the box */
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* This is your separate box with the shadow */
+.home-card {
+    background-color: #ffffff;
+    padding: 3.5rem 2.5rem;
+    border-radius: 24px;
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.home-input {
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 1.1rem;
+    background-color: #f8fafc; /* Slightly off-white so it's visible */
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.home-input:focus {
+    border-color: #38b2ac;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(56, 178, 172, 0.1);
+}
+
+.home-button {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: #38b2ac;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(56, 178, 172, 0.4);
+}
+
+.home-button:hover:not(:disabled) {
+    background-color: #319795;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(56, 178, 172, 0.3);
+}
+
+.home-button:active {
+    transform: translateY(0);
+}
+
+.home-button:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+    box-shadow: none;
+}

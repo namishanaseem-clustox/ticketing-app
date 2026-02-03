@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../api/planning_poker_api';
+import '../styles/Game.css'; // Ensure you create this file
 
 const Game = () => {
     const { gameId } = useParams();
@@ -12,12 +13,10 @@ const Game = () => {
     const [isrevealed, setIsRevealed] = useState(false);
     const [stats, setStats] = useState({});
 
-    //if someone has joined game the app remembers even after reload
     const [playerName, setPlayerName] = useState(
         localStorage.getItem(`player_${gameId}`) || ''
     );
 
-    //using temp name so only on join name is saved
     const [tempName, setTempName] = useState('');
     const [voteCount, setVoteCount] = useState(0);
 
@@ -28,8 +27,6 @@ const Game = () => {
             
             if (gamedata.status === 'revealed') {
                 setIsRevealed(true);
-                // We no longer need to calculate min/max/avg here!
-                // The backend already did it.
                 setStats({
                     ...gamedata.stats,
                     votes: gamedata.votes
@@ -46,11 +43,20 @@ const Game = () => {
     const handleReveal = async () => {
         try {
             const statsData = await api.revealGame(gameId);
-
             setStats(statsData);
             setIsRevealed(true);
         } catch (error) {
             console.error("Failed to reveal:", error);
+        }
+    };
+
+    const handleReset = async () => {
+        try {
+            await api.resetGame(gameId);
+            setIsRevealed(false);
+            setStats({});
+        } catch (error) {
+            console.error("Failed to reset:", error);
         }
     };
 
@@ -90,127 +96,139 @@ const Game = () => {
         }
     };
 
-    const handleReset = async () => {
-        try {
-            await api.resetGame(gameId);
-            setIsRevealed(false);
-            setStats({});
-        } catch (error) {
-            console.error("Failed to reset:", error);
-        }
-    };
-
     return (
-        <div>
-            {/* Header - Centered Name */}
-            <div>
-                <h1>{gameName} Game Lobby</h1>
-                {/*Just to test the url generation for now*/}
-                <h2>ID: {gameId}</h2>
-            </div>
+        <div className="game-container">
+            {/* Nav Bar Implementation */}
+            <nav className="navbar">
+                <div className="nav-left">
+                    <span>👤 {playerName || 'Joining...'}</span>
+                </div>
+                <div className="nav-center">
+                    <h1>{gameName}</h1>
+                </div>
+                <div className="nav-right">
+                    <span className={`badge ${isAdmin ? 'badge-admin' : 'badge-voter'}`}>
+                        {isAdmin ? 'Admin' : 'Voter'}
+                    </span>
+                </div>
+            </nav>
 
-            {/* Share Toggle Button - Centered */}
-            <div>
-                {!showshare && isAdmin &&
-                <button onClick={() => setShowShare(true)}>
-                    share invitation link
-                </button>}
-            </div>
-
-            {/* Share Box */}
-            {showshare && (
-                <div>
-                    {/* Link */}
-                    <div>📎 {window.location.href}</div>
-                    
-                    {/* Copy + Hide Buttons */}
-                    <div>
-                        <button onClick={CopyUrl}>
-                            {copied ? '✅ Copied!' : '📋 Copy Link'}
-                        </button>
-                        <button onClick={() => setShowShare(false)}>
-                            Hide
-                        </button>
+            <div className="game-content">
+                {/* Share Section Wrapper */}
+                {isAdmin && playerName && (
+                    <div className="card shadow-sm">
+                        {!showshare ? (
+                            <button className="share-button" onClick={() => setShowShare(true)}>
+                                Share Invitation Link
+                            </button>
+                        ) : (
+                            <div className="share-box">
+                                <p className="share-link">📎 {window.location.href}</p>
+                                <div className="button-group">
+                                    <button className="game-button share-btn-small" onClick={CopyUrl}>
+                                        {copied ? '✅ Copied!' : '📋 Copy Link'}
+                                    </button>
+                                    <button className="game-button share-btn-small btn-secondary" onClick={() => setShowShare(false)}>
+                                        Hide
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
+                )}
 
-            {!playerName && (
-                <div>
-                    <input
-                        value={tempName}
-                        onChange={(e) => setTempName(e.target.value)}
-                        placeholder='Enter your name'
-                    />
-                    <button onClick={() => {
-                        localStorage.setItem(`player_${gameId}`,tempName),
-                        setPlayerName(tempName);
-                        setTempName('');
-                    }}>
-                        Join
-                    </button>
-                </div>
-            )}
+                {/* Join Section Wrapper */}
+                {!playerName && (
+                    <div className="card">
+                        <h3>Set Your Name</h3>
+                        <input
+                            className="game-input"
+                            value={tempName}
+                            onChange={(e) => setTempName(e.target.value)}
+                            placeholder='Enter your name...'
+                        />
+                        <button className="game-button" onClick={() => {
+                            localStorage.setItem(`player_${gameId}`, tempName);
+                            setPlayerName(tempName);
+                            setTempName('');
+                        }}>Join Game</button>
+                    </div>
+                )}
 
-            {/* Ticket Card */}
-            { playerName && <div style={{
-                maxWidth: '400px',
-                margin: '2rem auto',
-                padding: '2rem',
-                borderRadius: '1rem',
-                backgroundColor: 'blueviolet',
-                boxShadow: '0 20px 25px -5px rgba(0, 0,0, 0.1), 0 10px 10px -5px rgba(0, 0,0, 0.04)',
-                textAlign: 'center'
-            }}>
-                {!isrevealed ? (
-                    <button 
-                        onClick={handleReveal}
-                        disabled={!isAdmin}
-                    >
-                        Reveal Votes
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleReset}
-                        disabled={!isAdmin}
-                    >
-                        Vote Again
-                    </button>
+                {/* Main Action Ticket Card */}
+                {playerName && (
+                    <div className="card action-card">
+                        <p className="vote-status">{voteCount} votes submitted</p>
+                        {!isrevealed ? (
+                            <button className="primary-action-btn" onClick={handleReveal} disabled={!isAdmin}>
+                                Reveal Votes
+                            </button>
+                        ) : (
+                            <button className="primary-action-btn" onClick={handleReset} disabled={!isAdmin}>
+                                Vote Again
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* Dynamic Player Deck */}
+                <div className="player-deck">
+                    {!isrevealed ? (
+                        /* 1. WHILE VOTING: Show "Backs" based on voteCount */
+                        Array.from({ length: voteCount }).map((_, index) => (
+                            <div key={`hidden-${index}`} className="player-card hidden">
+                                <div className="card-back">
+                                    <div className="card-pattern">
+                                        <span className="poker-icon">♣</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        /* 2. AFTER REVEAL: Show "Fronts" with real data */
+                        stats.votes && Object.entries(stats.votes).map(([player, value]) => (
+                            <div key={player} className="player-card revealed">
+                                <div className="card-back">
+                                    <span className="vote-value">{value}</span>
+                                    <span className="player-name-label">{player}</span>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* Voting Grid Section */}
+                {playerName && !isrevealed && (
+                    <div className="card">
+                        <h3 className="section-title">Select your estimate:</h3>
+                        <div className="vote-grid">
+                            {voteOptions.map((v) => (
+                                <button
+                                    key={v}
+                                    className="vote-btn"
+                                    onClick={async () => {
+                                        await api.submitVote(gameId, playerName, String(v));
+                                    }}
+                                >
+                                    {v}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Detailed Results Section */}
+                {isrevealed && (
+                    <div className="card results-card">
+                        <h3 className="section-title">Results</h3>
+                        <div className="stats-summary-footer">
+                            <div className="stat-item"><small>MIN</small><strong>{stats.min ?? '-'}</strong></div>
+                            <div className="stat-item"><small>MAX</small><strong>{stats.max ?? '-'}</strong></div>
+                            <div className="stat-item"><small>AVG</small><strong>{stats.avg ?? '-'}</strong></div>
+                        </div>
+                    </div>
                 )}
             </div>
-            }
-
-            {playerName && <div>
-                <h3>Voting options:</h3>
-                {voteOptions.map((v) => (
-                    <button
-                        key={v}
-                        onClick={async () => {
-                            await api.submitVote(gameId, playerName, String(v));
-                        }}
-                        disabled={isrevealed}
-                    >
-                        {v}
-                    </button>
-                ))}
-                </div>}
-
-            { isAdmin ? (<h3>Admin Page</h3>):(<h3>Voter Page</h3>)}
-            <h4>{voteCount} votes submitted</h4>
-            {isrevealed && <div>
-                {/*<h3>Total votes: { stats.votes }</h3>*/}
-                <h3>Total Votes:</h3>
-                <ul>
-                    {stats.votes && Object.entries(stats.votes).map(([player, value]) => (
-                        <li key={player} style={{ marginBottom: '5px'}}>
-                            <strong>{player}:</strong> {value}
-                        </li>
-                    ))}
-                </ul>
-                <h3>Min: {stats.min ?? '-'} Max: {stats.max ?? '-'} Avg: {stats.avg ?? '-'}</h3>
-            </div>}
-
-
         </div>
     );
 };

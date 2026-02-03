@@ -1,0 +1,339 @@
+.game-container {
+    min-height: 100vh;
+    background-color: #f0f4f8;
+    font-family: 'Inter', sans-serif;
+    color: #2d3748;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #ffffff;
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    box-shadow: 0 6px 15px -3px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-center h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1a202c;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.badge-admin { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
+.badge-voter { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
+
+/* Content Layout */
+.game-content {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.game-content .card:first-child {
+    margin-top: 1.5rem;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Voting Buttons */
+.vote-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 12px;
+    margin-top: 1.5rem;
+}
+
+.vote-btn {
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 19px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.vote-btn:hover:not(:disabled) {
+    border-color: #38b2ac;
+    color: #38b2ac;
+    transform: translateY(-2px);
+}
+
+.vote-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Control Button (The Purple Action Box) */
+.action-card {
+    background: #6b46c1; /* Modern Purple */
+    color: white;
+}
+
+.primary-action-btn {
+    background: white;
+    color: #6b46c1;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.primary-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.stats-summary-footer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+    background-color: #f8fafc;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.stat-item:not(:last-child){
+    border-right: 1px solid #e2e8f0;
+}
+
+.stat-item small {
+    color: #718096;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.stat-item strong {
+    font-size: 1.25rem;
+    color: #44337a;
+}
+
+.game-input {
+    width: 70%;
+    padding: 16px;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #dddddd;
+    font-size: 1.1rem;
+    background-color: #f8fafc; /* Slightly off-white so it's visible */
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.game-button {
+    width: 70%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: #38b2ac;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(56, 178, 172, 0.4);
+}
+
+.share-button {
+    width: 34%;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    background-color: #38b2ac;
+    color: white;
+    font-size: 1.0rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(56, 178, 172, 0.4);
+}
+
+/* Define the missing shadow class */
+.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.share-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem;
+    background-color: #fcfdfd;
+    border: 1px solid #38b2ac; /* Changed color to teal to match theme */
+    border-radius: 12px;
+
+    /* --- New Width Logic --- */
+    width: 90%;            /* Allows it to be responsive on small screens */
+    max-width: 420px;      /* Restricts the width so it looks compact */
+    margin: 1rem auto 0;   /* 'auto' for left/right ensures horizontal centering */
+}
+
+.share-link {
+    background-color: #d4d4d4;
+    padding: 5px; /* Increased from 2px for better look */
+    border-radius: 8px;
+    color: #4a5568;
+    font-family: monospace;
+    font-size: 0.9rem;
+    word-break: break-all;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Grouping buttons side-by-side */
+.button-group {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Overriding the 70% width specifically for share buttons */
+.share-btn-small {
+    width: auto !important; /* Overrides the 70% width */
+    min-width: 120px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+
+/* Secondary style for the 'Hide' button */
+.btn-secondary {
+    background-color: #d3d5d6;
+    color: #4a5568;
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background-color: #e2e8f0;
+}
+
+/* Container for the cards */
+.player-deck {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin: 4rem 0; /* Increased margin to account for bottom voting section */
+    width: 100%;
+}
+
+.player-card {
+    width: 90px;
+    height: 130px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Hidden state styling */
+.player-card.hidden {
+    background: linear-gradient(135deg, #6b46c1 0%, #44337a 100%);
+    border: 3px solid #ffffff; /* Gives it a white border like a real card */
+}
+
+/* Back of Card logic */
+.card-back {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-pattern {
+    width: 80%;
+    height: 85%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+    background-size: 10px 10px;
+}
+
+.poker-icon {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.5rem;
+}
+
+/* Revealed state styling */
+.player-card.revealed {
+    background: white;
+    border: 2px solid #44337a;
+}
+
+.card-front {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.vote-value {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #2d3748;
+}
+
+/* Centering the name inside the card at the bottom */
+.player-name-label {
+    position: absolute;
+    bottom: 8px; /* Inside the card at the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #44337a;
+    text-transform: uppercase;
+    width: 90%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

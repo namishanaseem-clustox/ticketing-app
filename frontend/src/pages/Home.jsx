@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/planning_poker_api';
+import '../styles/Home.css';
 
 const Home = () => {
     const [gameName, setGameName] = useState('');
@@ -20,7 +21,7 @@ const Home = () => {
             navigate(`/game/${game.id}`);
         } catch (error) {
             console.error("error during creation", error);
-            alert('Error creating the game');
+            alert('Failed to create game. PLease try again');
         } finally {
             setLoading(false);
             console.log("loading stopped");
@@ -31,19 +32,29 @@ const Home = () => {
     };
 
     return (
-        <form onSubmit={ createGame }>
-            <div>
-                <h1 >Planning Poker Game</h1>
-                <input
-                value= {gameName}
-                onChange={(e) => setGameName(e.target.value)}
-                placeholder='Enter game name'
-                />
-                <br/>
-                <button type="submit" disabled= {!gameName.trim() || loading}>create</button>
+        <div className='home-container'>
+            <h1 className='home-title'>Welcome to Planning Poker</h1>
+            
+            <div className='home-card'>
+                <form onSubmit={ createGame }>
+                    <input
+                        className='home-input'
+                        value= {gameName}
+                        onChange={(e) => setGameName(e.target.value)}
+                        placeholder='Enter project name'
+                    />
+                    <br/>
+                    <button 
+                        type="submit"
+                        className='home-button'
+                        disabled= {!gameName.trim() || loading}
+                    >
+                        {loading ? 'Creating...' : 'Create Game'}
+                    </button>
+                </form>
             </div>
-        </form>
-    )
+        </div>
+    );
 };
 
 export default Home;

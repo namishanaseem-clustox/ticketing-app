@@ -94,6 +94,7 @@ class GameService:
         if not game:
             return False
         
+        '''delete all previous votes for this game'''
         db.query(VoteDB).filter(VoteDB.game_id == game_id).delete()
 
         game.status = "voting"
