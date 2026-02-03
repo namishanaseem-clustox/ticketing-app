@@ -24,13 +24,18 @@ export const api = {
     },
 
     getVoteOptions: async () => {
-        const response = await axios.get(`${API_BASE}/games/options/`);
+        const response = await axios.get(`${API_BASE}/games/options`);
         return response.data;
     },
 
     revealGame: async(gameId) => {
         const response = await axios.post(`${API_BASE}/games/${gameId}/reveal`);
         return response.data;
+    },
+
+    resetGame: async(gameId) => {
+        const response = await axios.post(`${API_BASE}/games/${gameId}/reset`);
+        return response.data
     }
 
 }

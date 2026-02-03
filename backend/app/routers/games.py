@@ -65,3 +65,10 @@ def reveal(game_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Game not found")
     return stats
 
+@router.post("/{game_id}/reset")
+def reset_game(game_id: str, db: Session = Depends(get_db)):
+    success = GameService.reset_game(db, game_id)
+
+    if not success:
+        raise HTTPException(status_code=404, detail="Game not found")
+    return {"status": "success"}

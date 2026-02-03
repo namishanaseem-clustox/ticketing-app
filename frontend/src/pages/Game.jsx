@@ -90,6 +90,16 @@ const Game = () => {
         }
     };
 
+    const handleReset = async () => {
+        try {
+            await api.resetGame(gameId);
+            setIsRevealed(false);
+            setStats({});
+        } catch (error) {
+            console.error("Failed to reset:", error);
+        }
+    };
+
     return (
         <div>
             {/* Header - Centered Name */}
@@ -152,7 +162,21 @@ const Game = () => {
                 boxShadow: '0 20px 25px -5px rgba(0, 0,0, 0.1), 0 10px 10px -5px rgba(0, 0,0, 0.04)',
                 textAlign: 'center'
             }}>
-                <button disabled={!isAdmin} onClick={handleReveal}>Reveal Votes</button>
+                {!isrevealed ? (
+                    <button 
+                        onClick={handleReveal}
+                        disabled={!isAdmin}
+                    >
+                        Reveal Votes
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleReset}
+                        disabled={!isAdmin}
+                    >
+                        Vote Again
+                    </button>
+                )}
             </div>
             }
 

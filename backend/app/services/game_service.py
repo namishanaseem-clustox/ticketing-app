@@ -87,3 +87,16 @@ class GameService:
         stats["votes"] = {v.player_name: v.value for v in game.votes}
         
         return stats
+    
+    @staticmethod
+    def reset_game(db: Session, game_id: str) -> bool:
+        game = GameService.get_game(db, game_id)
+        if not game:
+            return False
+        
+        db.query(VoteDB).filter(VoteDB.game_id == game_id).delete()
+
+        game.status = "voting"
+        db.commit()
+
+        return True
