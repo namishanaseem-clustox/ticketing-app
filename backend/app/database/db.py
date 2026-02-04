@@ -5,11 +5,10 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")      # libsql://planning-poker-db-namisha.aws-ap-south-1.turso.io
+DATABASE_URL = os.getenv("DATABASE_URL")      
 AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 
 if DATABASE_URL and DATABASE_URL.startswith("libsql://"):
-    # strip the leading "libsql://" before embedding
     host = DATABASE_URL.removeprefix("libsql://")
 
     engine = create_engine(
