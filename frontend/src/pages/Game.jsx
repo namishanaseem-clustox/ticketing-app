@@ -222,9 +222,18 @@ const Game = () => {
                     <div className="card results-card">
                         <h3 className="section-title">Results</h3>
                         <div className="stats-summary-footer">
-                            <div className="stat-item"><small>MIN</small><strong>{stats.min ?? '-'}</strong></div>
-                            <div className="stat-item"><small>MAX</small><strong>{stats.max ?? '-'}</strong></div>
-                            <div className="stat-item"><small>AVG</small><strong>{stats.avg ?? '-'}</strong></div>
+                            <div className="stat-item">
+                                <small>MIN</small>
+                                <strong>{stats.min ?? '-'}</strong>
+                            </div>
+                            <div className="stat-item">
+                                <small>MAX</small>
+                                <strong>{stats.max ?? '-'}</strong>
+                            </div>
+                            <div className="stat-item">
+                                <small>AVG</small>
+                                <strong>{stats.avg ?? '-'}</strong>
+                            </div>
                         </div>
                     </div>
                 )}
